@@ -1,0 +1,41 @@
+package build
+
+
+import mill.*
+import mill.kotlinlib.*
+import mill.javalib.spring.boot.SpringBootModule
+
+
+trait BaseSpringBootModule extends SpringBootModule, KotlinModule { outer =>
+
+  override def springBootPlatformVersion = "3.5.3"
+
+  override def kotlinVersion = "2.2.20"
+
+  override def kotlincOptions: T[Seq[String]] = super.kotlincOptions() ++ Seq(
+    "-jvm-target",
+    "21",
+    "-Xjsr305=strict",
+  )
+}
+
+object lib extends BaseSpringBootModule {
+  override def artifactName: T[String] = "springadmin"
+
+  override def mvnDeps = Seq(
+    mvn"org.springframework.boot:spring-boot-starter-web",
+    mvn"com.fasterxml.jackson.module:jackson-module-kotlin",
+    mvn"org.jetbrains.kotlin:kotlin-reflect",
+    mvn"org.springframework.boot:spring-boot-starter-thymeleaf",
+
+    mvn"org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2",
+    mvn"org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.10.2",
+  )
+
+  override def compileMvnDeps = super.compileMvnDeps() ++ Seq(
+    mvn"org.springframework.boot:spring-boot-starter-data-jpa"
+  )
+
+  // AOT?
+
+}

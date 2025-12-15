@@ -1,0 +1,23 @@
+package build.example
+
+import mill.*
+import mill.kotlinlib.*
+import mill.javalib.spring.boot.SpringBootModule
+import build.BaseSpringBootModule
+import build.lib
+
+object `package` extends BaseSpringBootModule { outer =>
+
+  override def mvnDeps = Seq(
+    mvn"org.springframework.boot:spring-boot-starter",
+    mvn"org.jetbrains.kotlin:kotlin-reflect",
+    mvn"org.springframework.boot:spring-boot-starter-data-jpa",
+    mvn"org.hibernate.orm:hibernate-community-dialects",
+    // lib?
+  )
+
+  def moduleDeps = Seq(
+    build.lib
+  )
+
+}
