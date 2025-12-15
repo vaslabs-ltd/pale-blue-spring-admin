@@ -8,7 +8,7 @@ import javalib.spring.boot.SpringBootModule
 import os.Path
 
 
-trait BaseSpringBootModule extends SpringBootModule, KotlinModule { outer =>
+trait BaseSpringBootModule extends SpringBootModule, KotlinMavenModule { outer =>
 
   override def springBootPlatformVersion = "3.5.3"
 
@@ -19,8 +19,6 @@ trait BaseSpringBootModule extends SpringBootModule, KotlinModule { outer =>
     "21",
     "-Xjsr305=strict",
   )
-
-  override def resources = Task.Sources("src/main/resources")
 }
 
 object lib extends BaseSpringBootModule, PublishModule {
