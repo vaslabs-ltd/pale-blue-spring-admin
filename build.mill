@@ -1,9 +1,8 @@
 package build
 
 
-import mill.*
-import mill.kotlinlib.*
-import mill.javalib.spring.boot.SpringBootModule
+import mill.*, kotlinlib.* , publish.*
+import javalib.spring.boot.SpringBootModule
 
 
 trait BaseSpringBootModule extends SpringBootModule, KotlinModule { outer =>
@@ -17,9 +16,11 @@ trait BaseSpringBootModule extends SpringBootModule, KotlinModule { outer =>
     "21",
     "-Xjsr305=strict",
   )
+
+  // AOT ??
 }
 
-object lib extends BaseSpringBootModule {
+object lib extends BaseSpringBootModule, PublishModule {
   override def artifactName: T[String] = "springadmin"
 
   override def mvnDeps = Seq(
@@ -36,6 +37,22 @@ object lib extends BaseSpringBootModule {
     mvn"org.springframework.boot:spring-boot-starter-data-jpa"
   )
 
-  // AOT?
+  def publishVersion = "1.1.0"
+
+  def pomSettings = PomSettings(
+    description = "A Spring Boot Admin UI module for viewing data stored in a database",
+    organization = "com.paleblueapps",
+    url = "https://github.com/paleblueapps/pale-blue-spring-admin",
+    licenses = Seq(
+      License.`Apache-2.0`
+    ),
+    developers = Seq(
+      Developer(
+        id = "paleblueapps",
+        name = "Pale Blue"
+      )
+    ),
+    versionControl = VersionControl.github("paleblueapps", "pale-blue-spring-admin")
+  )
 
 }
