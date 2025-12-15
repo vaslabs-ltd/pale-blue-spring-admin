@@ -1,8 +1,11 @@
 package build
 
 
-import mill.*, kotlinlib.* , publish.*
+import mill.*
+import kotlinlib.*
+import publish.*
 import javalib.spring.boot.SpringBootModule
+import os.Path
 
 
 trait BaseSpringBootModule extends SpringBootModule, KotlinModule { outer =>
@@ -17,7 +20,7 @@ trait BaseSpringBootModule extends SpringBootModule, KotlinModule { outer =>
     "-Xjsr305=strict",
   )
 
-  // AOT ??
+  override def resources = Task.Sources("src/main/resources")
 }
 
 object lib extends BaseSpringBootModule, PublishModule {

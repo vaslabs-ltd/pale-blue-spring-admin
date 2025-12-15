@@ -6,6 +6,8 @@ import mill.javalib.spring.boot.SpringBootModule
 import build.BaseSpringBootModule
 import build.lib
 
+import scala.util.control.NonFatal
+
 object `package` extends BaseSpringBootModule { outer =>
 
   lib.publishLocal()
@@ -18,8 +20,18 @@ object `package` extends BaseSpringBootModule { outer =>
     mvn"com.paleblueapps:springadmin:${lib.publishVersion()}",
   )
 
-  override def runMvnDeps: T[Seq[Dep]] = super.runMvnDeps() ++ Seq(
+  override def runMvnDeps = super.runMvnDeps() ++ Seq(
     mvn"org.xerial:sqlite-jdbc"
   )
+
+  // Use moduleDir for working directory
+  override def runForkedTask(mainClass: Task[String], args: Task[Args] = Task.Anon(Args())): Task[Unit] =
+    Task.Anon {
+      try {
+        runner().run(args = args().value, mainClass = mainClass(), workingDir = moduleDir)
+      } catch {
+        case NonFatal(_) => Task.fail("Subprocess failed")
+      }
+    }
 
 }
