@@ -24,11 +24,17 @@ trait BaseSpringBootModule extends SpringBootModule, KotlinMavenModule { outer =
     mvn"org.jetbrains.kotlin:kotlin-allopen-compiler-plugin:${kotlinVersion()}"
   )
 
-  override def kotlincOptions: T[Seq[String]] = super.kotlincOptions() ++ Seq(
-    "-jvm-target",
-    "21",
-    "-Xjsr305=strict",
-  ) ++ allOpenAnnotations.flatMap(opt => Seq("-P", s"plugin:org.jetbrains.kotlin.allopen:annotation:${opt}"))
+  override def kotlincOptions: T[Seq[String]] = Task {
+    super.kotlincOptions() ++ Seq(
+      "-jvm-target",
+      "21",
+      "-Xjsr305=strict",
+    ) ++ allOpenAnnotations.flatMap(opt => Seq("-P", s"plugin:org.jetbrains.kotlin.allopen:annotation=${opt}"))
+      ++ Seq(
+        "-P",
+        s"plugin:org.jetbrains.kotlin.allopen:preset=spring"
+      )
+  }
 }
 
 object lib extends BaseSpringBootModule, PublishModule {

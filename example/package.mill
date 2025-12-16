@@ -15,10 +15,14 @@ object `package` extends BaseSpringBootModule { outer =>
       mvn"org.jetbrains.kotlin:kotlin-noarg-compiler-plugin:${kotlinVersion()}"
     )
 
-  override def kotlincOptions: T[Seq[String]] =
+  override def kotlincOptions: T[Seq[String]] = Task {
     super.kotlincOptions()
-    ++ allOpenAnnotations.flatMap(opt => Seq("-P", s"plugin:org.jetbrains.kotlin.noarg:annotation:${opt}"))
-
+    ++ allOpenAnnotations.flatMap(opt => Seq("-P", s"plugin:org.jetbrains.kotlin.noarg:annotation=${opt}"))
+    ++ Seq(
+      "-P",
+      s"plugin:org.jetbrains.kotlin.noarg:preset=jpa"
+    )
+  }
 
   override def mvnDeps = Seq(
     mvn"org.springframework.boot:spring-boot-starter",
