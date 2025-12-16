@@ -14,11 +14,21 @@ trait BaseSpringBootModule extends SpringBootModule, KotlinMavenModule { outer =
 
   override def kotlinVersion = "2.2.20"
 
+  def allOpenAnnotations = Seq(
+    "jakarta.persistence.Entity",
+    "jakarta.persistence.MappedSuperclass",
+    "jakarta.persistence.Embeddable"
+  )
+
+  override def kotlincPluginMvnDeps = Seq(
+    mvn"org.jetbrains.kotlin:kotlin-allopen-compiler-plugin:${kotlinVersion()}"
+  )
+
   override def kotlincOptions: T[Seq[String]] = super.kotlincOptions() ++ Seq(
     "-jvm-target",
     "21",
     "-Xjsr305=strict",
-  )
+  ) ++ allOpenAnnotations.flatMap(opt => Seq("-P", s"plugin:org.jetbrains.kotlin.allopen:annotation:${opt}"))
 }
 
 object lib extends BaseSpringBootModule, PublishModule {

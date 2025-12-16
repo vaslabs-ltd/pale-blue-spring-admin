@@ -10,6 +10,16 @@ import scala.util.control.NonFatal
 
 object `package` extends BaseSpringBootModule { outer =>
 
+  override def kotlincPluginMvnDeps =
+    super.kotlincPluginMvnDeps() ++ Seq(
+      mvn"org.jetbrains.kotlin:kotlin-noarg-compiler-plugin:${kotlinVersion()}"
+    )
+
+  override def kotlincOptions: T[Seq[String]] =
+    super.kotlincOptions()
+    ++ allOpenAnnotations.flatMap(opt => Seq("-P", s"plugin:org.jetbrains.kotlin.noarg:annotation:${opt}"))
+
+
   override def mvnDeps = Seq(
     mvn"org.springframework.boot:spring-boot-starter",
     mvn"org.jetbrains.kotlin:kotlin-reflect",
